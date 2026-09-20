@@ -17,12 +17,12 @@ provider "azurerm" {
 
 
 resource "azurerm_resource_group" "demo_aca" {
-  name     = "rg-terraform-demo-aca.${var.enviroment}"
+  name     = "rg-terraform-demo-aca-${var.enviroment}"
   location = "North Europe"
 }
 
 resource "azurerm_log_analytics_workspace" "demo_aca" {
-  name                = "law-terraform-demo-aca.${var.enviroment}"
+  name                = "law-terraform-demo-aca-${var.enviroment}"
   location            = azurerm_resource_group.demo_aca.location
   resource_group_name = azurerm_resource_group.demo_aca.name
   sku                 = "PerGB2018"
@@ -30,7 +30,7 @@ resource "azurerm_log_analytics_workspace" "demo_aca" {
 }
 
 resource "azurerm_container_app_environment" "demo_aca" {
-  name                       = "env-terraform-demo-aca.${var.enviroment}"
+  name                       = "env-terraform-demo-aca-${var.enviroment}"
   location                   = azurerm_resource_group.demo_aca.location
   resource_group_name        = azurerm_resource_group.demo_aca.name
   logs_destination           = "log-analytics"
@@ -44,7 +44,7 @@ resource "azurerm_container_app_environment" "demo_aca" {
 }
 
 resource "azurerm_container_app" "demo_aca" {
-  name                         = "app-terraform-demo-aca.${var.enviroment}"
+  name                         = "app-terraform-demo-aca-${var.enviroment}"
   container_app_environment_id = azurerm_container_app_environment.demo_aca.id
   resource_group_name          = azurerm_resource_group.demo_aca.name
   revision_mode                = "Single"
