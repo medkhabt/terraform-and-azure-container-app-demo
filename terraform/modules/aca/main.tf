@@ -42,32 +42,3 @@ resource "azurerm_container_app_environment" "demo_aca" {
     workload_profile_type = "Consumption"
   }
 }
-
-resource "azurerm_container_app" "demo_aca" {
-  name                         = "app-terraform-demo-aca-${var.enviroment}"
-  container_app_environment_id = azurerm_container_app_environment.demo_aca.id
-  resource_group_name          = azurerm_resource_group.demo_aca.name
-  revision_mode                = "Single"
-
-  template {
-    min_replicas = 0
-    max_replicas = 1
-
-    container {
-      name   = "demo"
-      image  = var.container_image
-      cpu    = 0.25
-      memory = "0.5Gi"
-    }
-  }
-
-  ingress {
-    external_enabled = true
-    target_port      = 80
-
-    traffic_weight {
-      percentage      = 100
-      latest_revision = true
-    }
-  }
-}
