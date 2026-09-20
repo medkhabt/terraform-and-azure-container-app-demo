@@ -1,10 +1,28 @@
 ---
-name: main
-on: [push]
+name: terraform
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        required: true
+        options:
+          - test
+          - staging
+          - prod
+      version:
+        required: true
+        type: string
+        default: latest
 jobs:
   plan:
     env:
       TF_TOKEN_app_terraform_io: ${{ secrets.HCP_TERRAFORM_TOKEN }}
+      TF_VAR_container_image:
+        mcr.microsoft.com/k8se/quickstart:${{ inputs.version }}
+      TF_CLOUD_ORGANIZATION: medkhabt-org
+      TF_WORKSPACE:
+        terraform-and-aca-demo-${{ inputs.environment }}
       ARM_USE_OIDC: true
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
@@ -12,15 +30,17 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v6
       - uses: hashicorp/setup-terraform@v4
+      - uses: gruntwork-io/terragrunt-action@v3
 
-      - run: terraform init
       - name: terraform plan
+        working-directory: terraform/live/${{ inputs.environment }}
         run: |
-          terraform plan -out=tfplan
+          terragrunt plan -out="${GITHUB_WORKSPACE}/tfplan"
       - uses: actions/upload-artifact@v4
         with:
           name: tfplan
@@ -35,6 +55,11 @@ jobs:
     needs: confirm
     env:
       TF_TOKEN_app_terraform_io: ${{ secrets.HCP_TERRAFORM_TOKEN }}
+      TF_VAR_container_image:
+        mcr.microsoft.com/k8se/quickstart:${{ inputs.version }}
+      TF_CLOUD_ORGANIZATION: medkhabt-org
+      TF_WORKSPACE:
+        terraform-and-azure-container-app-demo-${{ inputs.environment }}
       ARM_USE_OIDC: true
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
@@ -42,15 +67,17 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v4
+      - uses: gruntwork-io/terragrunt-action@v3
 
       - uses: actions/download-artifact@v4
         with:
           name: tfplan
 
-      - run: terraform init
-
-      - run: terraform apply tfplan
+      - name: Terragrunt Apply
+        working-directory: terraform/live/${{ inputs.environment }}
+        run: terragrunt apply tfplan
