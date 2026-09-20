@@ -25,15 +25,20 @@ jobs:
         with:
           name: tfplan
           path: tfplan
-  apply:
+  confirm:
     needs: plan
+    environment: deployment
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "confirmed"
+  apply:
+    needs: confirm
     env:
       TF_TOKEN_app_terraform_io: ${{ secrets.HCP_TERRAFORM_TOKEN }}
       ARM_USE_OIDC: true
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-    environment: deployment
     runs-on: ubuntu-latest
     permissions:
       id-token: write
