@@ -32,3 +32,7 @@ I had to go to app.terraform.io and create an account also create a workspace. F
 driven workflow, but for the demo, it needed to many changes, and i am not sure if it's even the right 
 thing to do, so i switched the workspace to local execution, i run terraform init and plan and confirmed that
 i wanted to migrate the state from my laptop to the terraofrm repo.
+### token for terraform login
+When running terraform login, it directs you to a page where you can generate a token for the login. That
+token can also be used for the ci in the form of the value of 
+an env variable "TF\_TOKEN\_app\_terraform\_io".
