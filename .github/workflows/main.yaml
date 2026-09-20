@@ -62,7 +62,7 @@ jobs:
         mcr.microsoft.com/k8se/quickstart:${{ inputs.version }}
       TF_CLOUD_ORGANIZATION: medkhabt-org
       TF_WORKSPACE:
-        terraform-and-azure-container-app-demo-${{ inputs.environment }}
+        terraform-and-aca-demo-${{ inputs.environment }}
       ARM_USE_OIDC: true
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
