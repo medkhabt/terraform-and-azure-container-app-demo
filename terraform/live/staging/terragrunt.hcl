@@ -3,5 +3,5 @@ terraform {
 }
 
 inputs = {
-  environment = "staging"
+  enviroment = "staging"
 }
