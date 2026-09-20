@@ -86,4 +86,4 @@ jobs:
 
       - name: Terragrunt Apply
         working-directory: terraform/live/${{ inputs.environment }}
-        run: terragrunt apply tfplan
+        run: terragrunt apply "${GITHUB_WORKSPACE}/tfplan"
