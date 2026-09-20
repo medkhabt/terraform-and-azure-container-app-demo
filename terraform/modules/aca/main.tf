@@ -2,9 +2,6 @@ terraform {
   cloud {
     organization = "medkhabt-org"
 
-    workspaces {
-      name = "terraform-and-azure-container-app-demo"
-    }
   }
   required_providers {
     azurerm = {
