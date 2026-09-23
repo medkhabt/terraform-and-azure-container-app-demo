@@ -84,6 +84,8 @@ resource "azurerm_user_assigned_identity" "demo-aca-identity" {
 }
 
 // assign acrpull role on the acr scope for the identity
+// todo: done manually, already late rushing to sleep, but i need to also 
+// add permission ( conditional elevated role ) for the sp.
 resource "azurerm_role_assignment" "demo-aca-acr-pull" {
   scope = azurerm_container_registry.demo-acr.id
   role_definition_name = "AcrPull"
