@@ -64,7 +64,7 @@ resource "azurerm_subnet" "subnet-private-endpoints" {
 
 // azure container registry, one acr for all envs 
 resource "azurerm_container_registry" "demo-acr" {
-  name = "demoacr"
+  name = "demoacrmedkha"
   resource_group_name = azurerm_resource_group.demo_aca.name
   location = azurerm_resource_group.demo_aca.location
 
