@@ -83,9 +83,7 @@ resource "azurerm_user_assigned_identity" "demo-aca-identity" {
   resource_group_name = azurerm_resource_group.demo_aca.name
 }
 
-// assign acrpull role on the acr scope for the identity
-// todo: done manually, already late rushing to sleep, but i need to also 
-// add permission ( conditional elevated role ) for the sp.
+// assigned the serviceprincipal a role that also assign roles for the resources in resource group
 resource "azurerm_role_assignment" "demo-aca-acr-pull" {
   scope = azurerm_container_registry.demo-acr.id
   role_definition_name = "AcrPull"
@@ -126,8 +124,7 @@ resource "azurerm_container_app" "demo_aca" {
     max_replicas = 1
     container {
       name   = "demo"
-      # todo change this so it will use acr.
-      image  = "${var.container_image}"
+      image  = "${azurerm_container_registry.demo-acr.login_server}/${var.container_image}"
       cpu    = 0.25
       memory = "0.5Gi"
     }

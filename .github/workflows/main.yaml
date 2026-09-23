@@ -18,9 +18,8 @@ jobs:
   plan:
     env:
       TF_TOKEN_app_terraform_io: ${{ secrets.HCP_TERRAFORM_TOKEN }}
-      # TODO change this to an image on the registry
       TF_VAR_container_image:
-        mcr.microsoft.com/k8se/quickstart:${{ inputs.version }}
+        demo/quickstart:${{ inputs.version }}
       TF_CLOUD_ORGANIZATION: medkhabt-org
       TF_WORKSPACE:
         terraform-and-aca-demo-${{ inputs.environment }}
