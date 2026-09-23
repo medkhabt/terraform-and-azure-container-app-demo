@@ -140,7 +140,7 @@ resource "azurerm_container_app" "demo_aca" {
   }
 
   identity {
-    type = "UserAssignedd"
+    type = "UserAssigned"
     identity_ids = [
       azurerm_user_assigned_identity.demo-aca-identity.id
     ]
