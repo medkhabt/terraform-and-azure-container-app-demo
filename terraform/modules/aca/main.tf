@@ -90,6 +90,53 @@ resource "azurerm_role_assignment" "demo-aca-acr-pull" {
   principal_id = azurerm_user_assigned_identity.demo-aca-identity.principal_id
 }
 
+// private dns zone for acr private endpoint
+resource "azurerm_private_dns_zone" "acr" {
+  name                = "privatelink.azurecr.io"
+  resource_group_name = azurerm_resource_group.demo_aca.name
+}
+
+// link the dns zone to our vnet.
+resource "azurerm_private_dns_zone_virtual_network_link" "acr" {
+  name                  = "acr-private-dns-link"
+
+  private_dns_zone_id = azurerm_private_dns_zone.acr.id
+  virtual_network_id = azurerm_virtual_network.demo-vnet.id
+
+  registration_enabled = false
+}
+
+// create private endpoint in private endpoints subnet with private service connectoni
+// to the subresource registry of the container registry we provisioned here., and create
+// a dns record for the azure acr hostname reference the endpoint ip.
+resource "azurerm_private_endpoint" "acr" {
+  name                = "pe-${azurerm_container_registry.demo-acr.name}"
+  location            = azurerm_resource_group.demo_aca.location
+  resource_group_name = azurerm_resource_group.demo_aca.name
+
+  subnet_id = azurerm_subnet.subnet-private-endpoints.id
+
+  private_service_connection {
+    name = "psc-${azurerm_container_registry.demo-acr.name}"
+
+    private_connection_resource_id = azurerm_container_registry.demo-acr.id
+
+    subresource_names = [
+      "registry"
+    ]
+
+    is_manual_connection = false
+  }
+
+  private_dns_zone_group {
+    name = "acr-private-dns"
+
+    private_dns_zone_ids = [
+      azurerm_private_dns_zone.acr.id
+    ]
+  }
+}
+
 resource "azurerm_log_analytics_workspace" "demo_aca" {
   name                = "law-terraform-demo-aca-${var.enviroment}"
   location            = azurerm_resource_group.demo_aca.location
