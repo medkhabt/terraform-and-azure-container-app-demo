@@ -169,10 +169,10 @@ resource "azurerm_container_app" "demo_aca" {
     min_replicas = 0
     max_replicas = 1
     container {
-      name   = "demo"
+      name   = "demo1"
       image  = "${azurerm_container_registry.demo-acr.login_server}/${var.container_image}"
       cpu    = 0.25
-      memory = "0.3Gi"
+      memory = "0.5Gi"
     }
   }
   ingress {
