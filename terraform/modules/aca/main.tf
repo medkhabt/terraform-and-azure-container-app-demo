@@ -72,8 +72,7 @@ resource "azurerm_container_registry" "demo-acr" {
   sku = "Premium"
   admin_enabled = false 
 
-  // TODO disable it after private link. 
-  public_network_access_enabled = true
+  public_network_access_enabled = false 
 
 }
 
@@ -173,7 +172,7 @@ resource "azurerm_container_app" "demo_aca" {
       name   = "demo"
       image  = "${azurerm_container_registry.demo-acr.login_server}/${var.container_image}"
       cpu    = 0.25
-      memory = "0.5Gi"
+      memory = "0.3Gi"
     }
   }
   ingress {
